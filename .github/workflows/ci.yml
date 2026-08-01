@@ -25,6 +25,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NOTIFY_SERVICE_URL: ${{ secrets.NOTIFY_SERVICE_URL }}
         run: pytest tests/ -v
 
   test-notify:
