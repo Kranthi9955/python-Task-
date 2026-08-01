@@ -136,7 +136,7 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1  # v0.35.0
         with:
           image-ref: fastapi-app:latest
           format: json
@@ -182,6 +182,13 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:latest
+
+  # TODO (candidates): Add the following security scanning job.
+  # Tool selection is your decision — document your choice in findings.md.
+  #
+  # iac-scan:
+  #   Scan the Helm chart or Terraform configuration for security misconfigurations
+  #   Upload JSON report as a build artifact named iac.<tool>.json
 
   # TODO (candidates): Add the following security scanning job.
   # Tool selection is your decision — document your choice in findings.md.
