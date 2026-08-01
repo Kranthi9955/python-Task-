@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: Python Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -19,12 +20,15 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run tests
+      - name: Run Tests
         run: pytest tests/ -v
 
   test-notify:
+    name: Node Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -36,12 +40,12 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
+        working-directory: notify
         run: npm install
-        working-directory: notify
 
-      - name: Run tests
-        run: npm test
+      - name: Run Tests
         working-directory: notify
+        run: npm test
 
   sast:
     name: SAST - Bandit
@@ -76,6 +80,42 @@ jobs:
         with:
           name: sast.bandit.json
           path: reports/sast.bandit.json
+
+  sca:
+    name: SCA - pip-audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pip-audit
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Run pip-audit
+        continue-on-error: true
+        run: |
+          pip-audit \
+            -r requirements.txt \
+            -f json \
+            -o reports/sca.pip-audit.json
+
+      - name: Upload SCA Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sca.pip-audit.json
+          path: reports/sca.pip-audit.json
   # TODO (candidates): Add the following security scanning jobs.
   # Tool selection is your decision — document your choices in findings.md.
   #
