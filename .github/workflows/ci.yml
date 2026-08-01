@@ -136,6 +136,8 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Trivy Scan
+        id: trivy
+        continue-on-error: true
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1  # v0.35.0
         with:
           image-ref: fastapi-app:latest
@@ -144,12 +146,24 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 1
 
+      - name: Verify Report
+        if: always()
+        run: |
+          ls -la reports
+          test -f reports/container.trivy.json && echo "Report created"
+
       - name: Upload Trivy Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: container.trivy.json
           path: reports/container.trivy.json
+
+      - name: Fail workflow if vulnerabilities found
+        if: steps.trivy.outcome == 'failure'
+        run: |
+          echo "High/Critical vulnerabilities found."
+          exit 1
 
   docker:
     name: Build and Push Docker Image
@@ -182,6 +196,13 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:latest
+
+  # TODO (candidates): Add the following security scanning job.
+  # Tool selection is your decision — document your choice in findings.md.
+  #
+  # iac-scan:
+  #   Scan the Helm chart or Terraform configuration for security misconfigurations
+  #   Upload JSON report as a build artifact named iac.<tool>.json
 
   # TODO (candidates): Add the following security scanning job.
   # Tool selection is your decision — document your choice in findings.md.
