@@ -24,6 +24,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify dependency versions
+        run: python -c "import fastapi, starlette; print(fastapi.__version__, starlette.__version__)"
+
       - name: Run Tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
