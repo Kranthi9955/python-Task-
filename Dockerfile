@@ -2,14 +2,14 @@ FROM python:3.11.13-slim-bookworm
 
 # Prevent Python from writing .pyc files
 ENV PYTHONDONTWRITEBYTECODE=1
-
 # Flush logs immediately
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install curl for healthcheck
+# Install curl for healthcheck, and patch OS-level vulnerabilities
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
