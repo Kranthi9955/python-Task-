@@ -1,0 +1,31 @@
+# ecdsa Minerva timing-attack — no upstream fix available (maintainers
+# consider side-channel attacks out of scope). Accepted risk.
+CVE-2024-23342
+
+# perl-base — no Debian security patch available yet as of 2026-08
+CVE-2026-13221
+CVE-2026-42496
+CVE-2026-57433
+CVE-2026-8376
+CVE-2026-42497
+CVE-2026-48962
+CVE-2026-57432
+CVE-2026-9538
+
+# curl / libcurl4 — no Debian security patch available yet
+CVE-2026-12064
+CVE-2026-6276
+CVE-2026-8286
+CVE-2026-8927
+
+# Remaining no-fix-available OS packages
+CVE-2026-53615
+CVE-2026-41992
+CVE-2026-54369
+CVE-2023-2953
+CVE-2025-69720
+CVE-2025-7458
+CVE-2026-55199
+CVE-2026-55200
+CVE-2026-7598
+CVE-2023-45853
